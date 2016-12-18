@@ -51,6 +51,7 @@ int main()
 
 		role->draw();
 		monster->draw();
+		monsterTextManager->draw();
 		scene->draw();
 
 		glfwSwapBuffers(window);
@@ -97,19 +98,19 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 	{
 		keys[key] = false;
 		if (key == GLFW_KEY_P) {
-			vec3print(role->position);
-			vec3print(scene->position);
-			vec3print(scene->color);
-			vec4print(scene->get_all_trans()*glm::vec4(scene->position, 1.0f));
+			vec3print(monsterTextManager->fixPos);
+			//vec3print(glm::vec3(monsterTextManager->getScreenPos(),1.0f));
+			auto opengl_pos = monster->get_all_trans() * glm::vec4(monsterTextManager->fixPos, 1.0f);
+			vec4print(opengl_pos);
 		}
 		else if (key == GLFW_KEY_Z) {
-
+			monsterTextManager->reactWithHit('z');
 		}
 		else if (key == GLFW_KEY_X) {
-
+			monsterTextManager->reactWithHit('x');
 		}
 		else if (key == GLFW_KEY_C) {
-
+			monsterTextManager->reactWithHit('c');
 		}
 	}
 }

@@ -156,12 +156,19 @@ public:
 	glm::mat4 projection;
 };
 
-//class MonsterTextManager {
-//public:
-//	std::string text;
-//	void draw();
-//};
+class MonsterTextManager {
+public:
+	MonsterTextManager(std::string text_value, glm::vec3 fixPos_value);
+	void draw();
+	glm::vec2 coordConvert(glm::vec4 opengl_pos);
+	glm::vec2 getScreenPos();
+	void reactWithHit(char ch);
 
+	std::string text;
+	glm::vec3 fixPos;
+};
+
+extern MonsterTextManager *monsterTextManager;
 extern FontManager *fontManager;
 extern Shader *generalShader;
 extern Camera *generalCamera;

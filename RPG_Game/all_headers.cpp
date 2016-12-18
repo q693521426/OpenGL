@@ -7,10 +7,11 @@ Timer *timer = nullptr;
 Role *role = nullptr;
 Role *scene = nullptr;
 Role *monster = nullptr;
+MonsterTextManager *monsterTextManager = nullptr;
 
 
 void vec4print(glm::vec4 vec) {
-	std::cout << "(" << vec.x << ", " << vec.y << ", " << vec.z << ")" << std::endl;
+	std::cout << "(" << vec.x << ", " << vec.y << ", " << vec.z << ", " << vec.w << ")" << std::endl;
 }
 
 void simplyRenderText(std::string text, GLfloat xpos, GLfloat ypos) {
@@ -25,7 +26,7 @@ void initilizeGlobalResource() {
 	scene = new Role("models/plat.obj", glm::vec3(0.0f, -1.0f, 0.0f), 3.0f, 100.0f, glm::vec3(1.0f, 0.5f, 0.2f));
 	monster = new Role("models/monster.obj", glm::vec3(-0.3f, 0.0f, 0.0f), 3.0f, 0.1f, glm::vec3(0.3f, 0.5f, 0.2f));
 	fontManager = new FontManager("shaders/text.vs", "shaders/text.frag");
-
+	monsterTextManager = new MonsterTextManager("zzxc", glm::vec3(0.0f, 1.01f, 0.0f));
 }
 
 void useGeneralShader(glm::mat4 all_trans, glm::vec3 object_color) {
@@ -449,4 +450,33 @@ void FontManager::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat sca
 	}
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+MonsterTextManager::MonsterTextManager(std::string text_value, glm::vec3 fixPos_value)
+	:text(text_value), fixPos(fixPos_value)
+{
+}
+
+void MonsterTextManager::draw()
+{
+	auto pos = this->getScreenPos();
+	simplyRenderText(text, pos.x, pos.y);
+}
+
+glm::vec2 MonsterTextManager::coordConvert(glm::vec4 opengl_pos)
+{
+	return glm::vec2((opengl_pos.x / opengl_pos.z + 1.0f) / 2.0f*WIDTH, (opengl_pos.y / opengl_pos.z + 1.0f) / 2.0f*HEIGHT);
+}
+
+glm::vec2 MonsterTextManager::getScreenPos()
+{
+	auto opengl_pos = monster->get_all_trans() * glm::vec4(fixPos, 1.0f);
+	return this->coordConvert(opengl_pos);
+}
+
+void MonsterTextManager::reactWithHit(char ch)
+{
+	if (ch == text[0]) {
+		text = text.substr(1, text.size());
+	}
 }
